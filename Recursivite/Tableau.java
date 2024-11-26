@@ -1,4 +1,5 @@
-import java.lang.reflect.Method;
+package Recursivite;
+
 import java.util.ArrayList;
 
 public class Tableau {

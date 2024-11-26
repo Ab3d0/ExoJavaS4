@@ -1,4 +1,4 @@
-package Recursivité.Appels;
+package Recursivite.Appels;
 
 public class ex01 {
     public static void main(String[] args){
