@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Traces {
+public class exo1 {
     public static void main(String[] args){
 
         Thread thread1 = new Thread(()-> {
