@@ -9,28 +9,23 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 
-
-
-import javax.swing.*;
-
 public class Couleurs {
 
-    private final Map<String,String> couleurs = new HashMap<>();
-    
-    public static void main(String[] args){
-       
+    public Map<String, String> couleurs = new HashMap<>();
+
+    public static void main(String[] args) {
 
         Couleurs example = new Couleurs();
         example.lecture();
 
         JFrame fenetre = new JFrame();
-        fenetre.setSize(800,400);
-        fenetre.setLocation(100,100);
+        fenetre.setSize(800, 400);
+        fenetre.setLocation(100, 100);
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setVisible(true);
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for(String key : example.couleurs.keySet()){
+        for (String key : example.couleurs.keySet()) {
             listModel.addElement(key);
         }
 
@@ -43,89 +38,60 @@ public class Couleurs {
         JLabel selectedLabel = new JLabel();
         selectedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        itemList.addListSelectionListener(new ListSelectionListener(){
-            @Override
-            public void valueChanged(ListSelectionEvent e){
-                if(!e.getValueIsAdjusting()){
-                    String selectedKey = itemList.getSelectedValue();
-                    if(selectedKey != null){
-                        String rgbValue = example.couleurs.get(selectedKey);
-                        selectedLabel.setText("Selection : " + rgbValue);
+        // Utilisez la classe externe pour écouter les sélections de la liste
+        ListSelectionListenerImpl listener = new ListSelectionListenerImpl(example, selectedLabel, itemList);
+        itemList.addListSelectionListener(listener);
 
-                    }
-                }
-            }
-        });
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.add(selectedLabel, BorderLayout.CENTER);
 
-    JPanel rightPanel = new JPanel(new BorderLayout());
-    rightPanel.add(selectedLabel, BorderLayout.CENTER);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, rightPanel);
+        splitPane.setDividerLocation(300);
+        splitPane.setResizeWeight(0.3);
+        fenetre.add(splitPane, BorderLayout.CENTER);
 
-
-
-
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, rightPanel);
-    splitPane.setDividerLocation(300);
-    splitPane.setResizeWeight(0.3);
-    fenetre.add(splitPane, BorderLayout.CENTER);
-
-    fenetre.setVisible(true);
-
-
-
-       
-       
-       
-
+        fenetre.setVisible(true);
     }
-    public void lecture(){
-        String ligne;
-       
 
-        
+    public void lecture() {
+        String ligne;
+
         try {
             BufferedReader lecture = new BufferedReader(new FileReader("Dictionnaire/rgb.txt"));
-            /*Verifier si le fichier est ouvert */
             System.out.println("J'ai lu");
-            try{
-                while((ligne = lecture.readLine()) != null){
+            try {
+                while ((ligne = lecture.readLine()) != null) {
                     ligne = ligne.trim();
                     System.out.println("Ligne lue" + ligne);
                     String[] parties = ligne.split("\\s+", 4);
 
-                    if(parties.length >=4){
-                       String[] var = {parties[0].trim(), parties[1].trim(), parties[2].trim()};
-                       String rgbValue = String.join(" ",var);
+                    if (parties.length >= 4) {
+                        String[] var = {parties[0].trim(), parties[1].trim(), parties[2].trim()};
+                        String rgbValue = String.join(" ", var);
 
-                        String var1= parties[3];
+                        String var1 = parties[3];
                         String rgbKey = String.join(" ", var1);
 
-                        couleurs.put(rgbKey,rgbValue );
+                        couleurs.put(rgbKey, rgbValue);
 
-                        for(Map.Entry<String,String> entry : couleurs.entrySet()){
-                            System.out.println(entry.getKey() + " " +  entry.getValue());
+                        for (Map.Entry<String, String> entry : couleurs.entrySet()) {
+                            System.out.println(entry.getKey() + " " + entry.getValue());
                         }
-                        
-                    }else{
-                        
+
+                    } else {
+                        // Gérer le cas où la ligne ne contient pas suffisamment d'éléments
                     }
-                   
-
                 }
-                
-
-                    
             } catch (IOException e) {
-            // TODO: handle exception
-                System.err.println("Erreur de lecture dans rgb.txt !" );
+                System.err.println("Erreur de lecture dans rgb.txt !");
             }
-            try{
+            try {
                 lecture.close();
-            } catch(IOException e) {
-              System.err.println("Erreur de fermeture de rgb.txt !");
+            } catch (IOException e) {
+                System.err.println("Erreur de fermeture de rgb.txt !");
             }
-            } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("Erreur d'ouverture de rgb.txt !");
-          }
+        }
     }
 }
-
